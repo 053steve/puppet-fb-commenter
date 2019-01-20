@@ -1,15 +1,20 @@
 const puppeteer = require('puppeteer');
 const path = require('path');
 var robot = require("robotjs");
+var childProcess = require('child_process');
 
 
 //Caution: Must set target by manually setting upload window to file location
-const robotTargetImage = () => {
+const robotTargetImage = (numberOfDowns) => {
+    numberOfDowns = numberOfDowns || 1;
     console.log('keytapdown');
     robot.keyTap("down");
-    console.log('keytapEnter');
-    robot.keyTap("enter");
-    console.log('robotTargetImage--finished');
+    
+    setTimeout(()=> {
+        console.log('keytapEnter');
+        robot.keyTap("enter");
+        console.log('robotTargetImage--finished');
+    }, 500);    
 }
 
 const getRandomInt = (min, max) => {
@@ -18,13 +23,25 @@ const getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+const focusToChromium = () => {    
+    childProcess.exec('./refocus.sh',function (err,stdout,stderr) {
+        if (err) {
+            console.log("\n"+stderr);
+        } else {
+            console.log(stdout);
+        }
+    });
+}
+
 let count = 0;
 
 const botStart = async () => {
-    console.log('Get ready, Focus to chromium screen in 3 seconds else things will fuck up!');
-    console.log('Current;y while script is running chromeium must be focus at all times');    
+    // console.log('Get ready, Focus to chromium screen in 3 seconds else things will fuck up!');
+    focusToChromium();
+    console.log('Currently while script is running chromeium must be focus at all times');    
     console.log(`Current Memory Usage >>> ${JSON.stringify(process.memoryUsage())}`);
     console.log('Starting....');
+
 
     count++;
     console.log(`Counter >>> ${count}`);
@@ -92,9 +109,3 @@ const botStart = async () => {
 }
 
 botStart();
-
-// (async () => {
-    
-
-// })();
-
