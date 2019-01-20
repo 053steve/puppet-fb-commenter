@@ -37,7 +37,7 @@ let count = 0;
 
 const botStart = async () => {
     // console.log('Get ready, Focus to chromium screen in 3 seconds else things will fuck up!');
-    focusToChromium();
+    // focusToChromium();
     console.log('Currently while script is running chromeium must be focus at all times');    
     console.log(`Current Memory Usage >>> ${JSON.stringify(process.memoryUsage())}`);
     console.log('Starting....');
@@ -50,8 +50,10 @@ const botStart = async () => {
     const pages = await browser.pages();
     
     //random delay for human like results
-    const loadingDelay = getRandomInt(6000, 7000); 
-    const reloadDelay = getRandomInt(loadingDelay + 600000, loadingDelay + 900000);
+    const loadingDelay = 6000; 
+    const reloadDelay = 8000;
+    // const loadingDelay = getRandomInt(6000, 7000); 
+    // const reloadDelay = getRandomInt(loadingDelay + 600000, loadingDelay + 900000);
     // const osType = process.env.osType || 'mac' //Unless given type, the defualt will be a mac (Not used yet)
     // console.log(pages);    
     let page = pages[0];
@@ -68,7 +70,10 @@ const botStart = async () => {
 
             
             const myElementText = await page.evaluateHandle((divIndex) => {
+
                 let commentEl = document.querySelectorAll('._65td')[divIndex];
+                console.log(document.querySelectorAll('._65td'));
+                console.log(divIndex)
                 console.log('commentEl')
                 console.log(commentEl)
                 return commentEl;   
@@ -81,15 +86,18 @@ const botStart = async () => {
                 return photoLink;
             }, divIndex);
             
-            await myElementPhotoLink.click();
+            await myElementPhotoLink.click();            
+            console.log('Photo link clicked');
             await myElementText.focus();
+            console.log('text focus');
 
             setTimeout(async () => {
-                robotTargetImage();
+                robotTargetImage(1);
             }, 1000);
 
             setTimeout(async () => {                
-                await page.keyboard.press('Enter');                
+                await page.keyboard.press('Enter');
+                console.log('keyboard press enter');
             }, loadingDelay);
 
             setTimeout(async () => {
