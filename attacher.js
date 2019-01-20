@@ -49,11 +49,14 @@ const botStart = async () => {
     const browser = await puppeteer.connect({ browserWSEndpoint, slowMo: 150 });
     const pages = await browser.pages();
     
+    
+    // For quick test    
+    // const loadingDelay = 6000; 
+    // const reloadDelay = 8000;
+    
     //random delay for human like results
-    const loadingDelay = 6000; 
-    const reloadDelay = 8000;
-    // const loadingDelay = getRandomInt(6000, 7000); 
-    // const reloadDelay = getRandomInt(loadingDelay + 600000, loadingDelay + 900000);
+    const loadingDelay = getRandomInt(6000, 7000); 
+    const reloadDelay = getRandomInt(loadingDelay + 600000, loadingDelay + 900000);
     // const osType = process.env.osType || 'mac' //Unless given type, the defualt will be a mac (Not used yet)
     // console.log(pages);    
     let page = pages[0];
@@ -70,7 +73,7 @@ const botStart = async () => {
 
             
             const myElementText = await page.evaluateHandle((divIndex) => {
-
+                // Must check if have this class everytime (responsive dynamic class)
                 let commentEl = document.querySelectorAll('._65td')[divIndex];
                 console.log(document.querySelectorAll('._65td'));
                 console.log(divIndex)
