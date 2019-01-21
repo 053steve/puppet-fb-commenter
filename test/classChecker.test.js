@@ -1,12 +1,16 @@
 const puppeteer = require('puppeteer');
 const assert = require('assert');
 var should = require('chai').should() //actually call the function
+// import config from '../config';
+const constants = require('../constants');
+const expect = require('chai').expect;
+
 
 
 // Settings for testing here
-const targetTextArea = '._65td';
-const targetUploadPH = '[data-tooltip-content="Attach a photo or video"]';
-const browserWSEndpoint = 'ws://127.0.0.1:51475/devtools/browser/a6ef20e1-5348-4c1e-9a0f-5be2623ab544';
+const targetTextArea = constants.targetTextArea;
+const targetUploadPH = constants.targetUploadPH;
+const browserWSEndpoint = 'ws://127.0.0.1:54357/devtools/browser/59f1144b-b3d0-4a52-9028-35930f7f058f';
 const divIndex = 0;
 
 let page;
@@ -21,24 +25,29 @@ before( async () => {
 });
 
 describe('Checking for targetTextArea', () => {
-    it('targetTextArea should not be undefined', async () => {
-        const myElementText = await page.evaluateHandle(({targetTextArea, divIndex}) => {
-            
-            // Must check if have this class everytime (responsive dynamic class)
-            let commentEl = document.querySelectorAll(targetTextArea)[divIndex];                
-            return commentEl;   
-        }, {targetTextArea, divIndex});
-        should.exist(myElementText);        
+    it('targetTextArea should not be undefined', async () => {        
+        
+        try {
+            await page.waitForSelector(targetTextArea);
+        } catch (error) {
+            console.log(error);
+            console.log("The element didn't appear.")
+            assert.fail();
+        }        
     });
 });
 
 describe('Checking for targetUploadPH', () => {    
-    it('targetUploadPH should not be undefined', async () => {
-        const myElementPhotoLink = await page.evaluateHandle(({targetUploadPH ,divIndex}) => {
-            let photoLink = document.querySelectorAll(targetUploadPH)[divIndex];                
-            return photoLink;
-        }, {targetUploadPH ,divIndex});    
-        should.exist(myElementPhotoLink);                
+    it('targetUploadPH should not be undefined', async () => {        
+
+        try {
+            await page.waitForSelector(targetUploadPH);
+        } catch (error) {
+            console.log(error);
+            console.log("The element didn't appear.")
+            assert.fail();
+        }   
+
     });
 });
 

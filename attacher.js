@@ -2,6 +2,10 @@ const puppeteer = require('puppeteer');
 const path = require('path');
 var robot = require("robotjs");
 var childProcess = require('child_process');
+let constants = require('./constants');
+
+const targetTextArea = constants.targetTextArea;
+const targetUploadPH = constants.targetUploadPH;
 
 
 //Caution: Must set target by manually setting upload window to file location
@@ -45,6 +49,7 @@ const botStart = async () => {
 
     count++;
     console.log(`Counter >>> ${count}`);
+    console.log('constants >>> ' + JSON.stringify(constants));
     const browserWSEndpoint = process.env.wsURL || null;
     const browser = await puppeteer.connect({ browserWSEndpoint, slowMo: 150 });
     const pages = await browser.pages();
@@ -71,23 +76,23 @@ const botStart = async () => {
         if (browserWSEndpoint) {                        
             // page.on('console', (log) => console[log._type](log._text)); 
 
-            
-            const myElementText = await page.evaluateHandle((divIndex) => {
+            console.log(targetTextArea);
+            const myElementText = await page.evaluateHandle(({targetTextArea, divIndex}) => {
                 // Must check if have this class everytime (responsive dynamic class)
-                let commentEl = document.querySelectorAll('._65td')[divIndex];
-                console.log(document.querySelectorAll('._65td'));
+                let commentEl = document.querySelectorAll(targetTextArea)[divIndex];
+                console.log(document.querySelectorAll(targetTextArea));
                 console.log(divIndex)
                 console.log('commentEl')
                 console.log(commentEl)
                 return commentEl;   
-            },divIndex);
+            },{targetTextArea, divIndex});
 
-            const myElementPhotoLink = await page.evaluateHandle((divIndex) => {
-                let photoLink = document.querySelectorAll('[data-tooltip-content="Attach a photo or video"]')[divIndex];
+            const myElementPhotoLink = await page.evaluateHandle(({targetUploadPH ,divIndex}) => {
+                let photoLink = document.querySelectorAll(targetUploadPH)[divIndex];
                 console.log('photoLink')
                 console.log(photoLink)
                 return photoLink;
-            }, divIndex);
+            }, {targetUploadPH ,divIndex});
             
             await myElementPhotoLink.click();            
             console.log('Photo link clicked');
