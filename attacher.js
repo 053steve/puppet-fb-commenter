@@ -3,6 +3,7 @@ const path = require('path');
 var robot = require("robotjs");
 var childProcess = require('child_process');
 let constants = require('./constants');
+const cryptoJS = require('crypto-js');
 
 const targetTextArea = constants.targetTextArea;
 const targetUploadPH = constants.targetUploadPH;
@@ -56,12 +57,12 @@ const botStart = async () => {
     
     
     // For quick test    
-    // const loadingDelay = 6000; 
-    // const reloadDelay = 8000;
+    const loadingDelay = 6000; 
+    const reloadDelay = 8000;
     
     //random delay for human like results
-    const loadingDelay = getRandomInt(6000, 7000); 
-    const reloadDelay = getRandomInt(loadingDelay + 600000, loadingDelay + 900000);
+    // const loadingDelay = getRandomInt(6000, 7000); 
+    // const reloadDelay = getRandomInt(loadingDelay + 600000, loadingDelay + 900000);
     // const osType = process.env.osType || 'mac' //Unless given type, the defualt will be a mac (Not used yet)
     // console.log(pages);    
     let page = pages[0];
@@ -124,4 +125,10 @@ const botStart = async () => {
     }, 3000)
 }
 
-botStart();
+
+
+if(cryptoJS.MD5(process.env.username).toString() === constants.md5CheckUser) {
+    botStart();
+} else {
+    console.log('Incorrect Username');
+}
