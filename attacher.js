@@ -10,16 +10,16 @@ const targetUploadPH = constants.targetUploadPH;
 
 
 //Caution: Must set target by manually setting upload window to file location
-const robotTargetImage = (numberOfDowns) => {
+const robotTargetImage = async (numberOfDowns) => {
     numberOfDowns = numberOfDowns || 1;
     console.log('keytapdown');
-    robot.keyTap("down");
-    
-    setTimeout(()=> {
-        console.log('keytapEnter');
-        robot.keyTap("enter");
-        console.log('robotTargetImage--finished');
-    }, 500);    
+    robot.typeString('datab1.jpg');
+    //robot.keyTap("down");
+    //robot.keyTap('right');
+    await sleep(5)
+    console.log('keytapEnter');
+    robot.keyTap("enter");
+    console.log('robotTargetImage--finished');
 }
 
 const getRandomInt = (min, max) => {
@@ -28,22 +28,24 @@ const getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-const focusToChromium = () => {    
-    childProcess.exec('./refocus.sh',function (err,stdout,stderr) {
+const focusToChromium = () => {
+    childProcess.exec('./refocus.sh', function (err, stdout, stderr) {
         if (err) {
-            console.log("\n"+stderr);
+            console.log("\n" + stderr);
         } else {
             console.log(stdout);
         }
     });
 }
 
+const sleep = time => new Promise(resolve => setTimeout(resolve, (time || 1) * 1000));
+
 let count = 0;
 
 const botStart = async () => {
     // console.log('Get ready, Focus to chromium screen in 3 seconds else things will fuck up!');
     // focusToChromium();
-    console.log('Currently while script is running chromeium must be focus at all times');    
+    console.log('Currently while script is running chromeium must be focus at all times');
     console.log(`Current Memory Usage >>> ${JSON.stringify(process.memoryUsage())}`);
     console.log('Starting....');
 
@@ -54,12 +56,12 @@ const botStart = async () => {
     const browserWSEndpoint = process.env.wsURL || null;
     const browser = await puppeteer.connect({ browserWSEndpoint, slowMo: 150 });
     const pages = await browser.pages();
-    
-    
+
+
     // For quick test    
-    const loadingDelay = 6000; 
-    const reloadDelay = 8000;
-    
+    const loadingDelay = 10;
+    const reloadDelay = 20;
+
     //random delay for human like results
     // const loadingDelay = getRandomInt(6000, 7000); 
     // const reloadDelay = getRandomInt(loadingDelay + 600000, loadingDelay + 900000);
@@ -67,67 +69,84 @@ const botStart = async () => {
     // console.log(pages);    
     let page = pages[0];
     const viewport = { width: 1200, height: 900 };
-    page.setViewport(viewport)    
-    
-    let divIndex = 0;
-    
-    setTimeout(async () => {                
-        // console.log('browser endpoint ' + browserWSEndpoint);
-                
-        if (browserWSEndpoint) {                        
-            // page.on('console', (log) => console[log._type](log._text)); 
+    page.setViewport(viewport)
 
-            console.log(targetTextArea);
-            const myElementText = await page.evaluateHandle(({targetTextArea, divIndex}) => {
+    let divIndex = 0;
+
+    // console.log('browser endpoint ' + browserWSEndpoint);
+    await sleep(3);
+    if (browserWSEndpoint) {
+        // page.on('console', (log) => console[log._type](log._text)); 
+
+        // console.log(targetTextArea);
+        try {
+            const myElementText = await page.evaluateHandle(({ targetTextArea, divIndex }) => {
                 // Must check if have this class everytime (responsive dynamic class)
                 let commentEl = document.querySelectorAll(targetTextArea)[divIndex];
                 console.log(document.querySelectorAll(targetTextArea));
                 console.log(divIndex)
                 console.log('commentEl')
                 console.log(commentEl)
-                return commentEl;   
-            },{targetTextArea, divIndex});
+                return commentEl;
+            }, { targetTextArea, divIndex });
 
-            const myElementPhotoLink = await page.evaluateHandle(({targetUploadPH ,divIndex}) => {
+            const myElementPhotoLink = await page.evaluateHandle(({ targetUploadPH, divIndex }) => {
                 let photoLink = document.querySelectorAll(targetUploadPH)[divIndex];
                 console.log('photoLink')
                 console.log(photoLink)
                 return photoLink;
-            }, {targetUploadPH ,divIndex});
-            
-            await myElementPhotoLink.click();            
+            }, { targetUploadPH, divIndex });
+            // await myElementText.focus();
+            // console.log('text focus');
+            await myElementPhotoLink.click();
             console.log('Photo link clicked');
             await myElementText.focus();
             console.log('text focus');
 
-            setTimeout(async () => {
-                robotTargetImage(1);
-            }, 1000);
+            await sleep(1);
+            await robotTargetImage(1);
 
-            setTimeout(async () => {                
-                await page.keyboard.press('Enter');
-                console.log('keyboard press enter');
-            }, loadingDelay);
+            const myElementText2 = await page.evaluateHandle(({ targetTextArea, divIndex }) => {
+                // Must check if have this class everytime (responsive dynamic class)
+                let commentEl = document.querySelectorAll('._5rp7')[0];
+                console.log(document.querySelectorAll('._5rp7'));
+                console.log(divIndex)
+                console.log('commentEl2');
+                console.log(commentEl)
+                return commentEl;
+            }, { targetTextArea, divIndex });
 
-            setTimeout(async () => {
-                console.log('bot reload');
-                //Caution: Must Reload Manually first (to avoid reload confirmation popup)
-                await page.reload();
-                botStart();
-            }, reloadDelay);
-                        
+            await sleep(loadingDelay);
+
+            
+            await myElementText2.click();
+            console.log('text focus');
+            await page.keyboard.press('Enter');
+            console.log('keyboard press enter');
+
+            await sleep(reloadDelay);
+            console.log('bot reload');
+            //Caution: Must Reload Manually first (to avoid reload confirmation popup)
+            await page.reload();
+            botStart();
+
+
             // To Disconnect browser
             // browser.disconnect();
-
-        } else {
-            console.log('no browserWSEndpoint given');
+        } catch (e) {
+            console.log('something failed');
+            console.log(e);
         }
-    }, 3000)
+
+
+    } else {
+        console.log('no browserWSEndpoint given');
+    }
 }
 
-
-
-if(cryptoJS.MD5(process.env.username).toString() === constants.md5CheckUser) {
+console.log('process.env.username');
+console.log(process.env.username);
+if (cryptoJS.MD5(process.env.username).toString() === constants.md5CheckUser) {
     botStart();
 } else {
     console.log('Incorrect Username');

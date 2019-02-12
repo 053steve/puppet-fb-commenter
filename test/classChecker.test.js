@@ -10,7 +10,7 @@ const expect = require('chai').expect;
 // Settings for testing here
 const targetTextArea = constants.targetTextArea;
 const targetUploadPH = constants.targetUploadPH;
-const browserWSEndpoint = 'ws://127.0.0.1:54357/devtools/browser/59f1144b-b3d0-4a52-9028-35930f7f058f';
+const browserWSEndpoint = 'ws://127.0.0.1:61558/devtools/browser/b3e87241-87e8-43c7-a3d8-3b42933c956c';
 const divIndex = 0;
 
 let page;
