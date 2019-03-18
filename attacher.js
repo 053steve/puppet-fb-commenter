@@ -7,6 +7,7 @@ const cryptoJS = require('crypto-js');
 
 const targetTextArea = constants.targetTextArea;
 const targetUploadPH = constants.targetUploadPH;
+const targetCommentBox = constants.targetCommentBox;
 
 
 //Caution: Must set target by manually setting upload window to file location
@@ -106,15 +107,15 @@ const botStart = async () => {
             await sleep(1);
             await robotTargetImage(1);
 
-            const myElementText2 = await page.evaluateHandle(({ targetTextArea, divIndex }) => {
+            const myElementText2 = await page.evaluateHandle(({ targetCommentBox, divIndex }) => {
                 // Must check if have this class everytime (responsive dynamic class)
-                let commentEl = document.querySelectorAll('._5rp7')[0];
-                console.log(document.querySelectorAll('._5rp7'));
+                let commentEl = document.querySelectorAll(targetCommentBox)[0];
+                console.log(document.querySelectorAll(targetCommentBox));
                 console.log(divIndex)
                 console.log('commentEl2');
                 console.log(commentEl)
                 return commentEl;
-            }, { targetTextArea, divIndex });
+            }, { targetCommentBox, divIndex });
 
             await sleep(loadingDelay);
 
