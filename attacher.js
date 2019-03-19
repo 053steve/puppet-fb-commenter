@@ -65,8 +65,8 @@ const botStart = async () => {
     const reloadDelay = 20;
 
     //random delay for human like results
-    // const loadingDelay = getRandomInt(6000, 7000); 
-    // const reloadDelay = getRandomInt(loadingDelay + 600000, loadingDelay + 900000);
+    // const loadingDelay = getRandomInt(30, 40); 
+    // const reloadDelay = getRandomInt(loadingDelay + 20, loadingDelay + 23);
     // const osType = process.env.osType || 'mac' //Unless given type, the defualt will be a mac (Not used yet)
     // console.log(pages);    
     let page = pages[0];
@@ -112,7 +112,7 @@ const botStart = async () => {
 
             await sleep(1);
             await robotTargetImage(1);
-
+            await sleep(3);
             const myElementText2 = await page.evaluateHandle(({ targetCommentBox, divIndex }) => {
                 // Must check if have this class everytime (responsive dynamic class)
                 let commentEl = document.querySelectorAll(targetCommentBox)[divIndex];
