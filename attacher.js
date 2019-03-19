@@ -59,6 +59,7 @@ const botStart = async () => {
     const pages = await browser.pages();
 
 
+    
     // For quick test    
     const loadingDelay = 10;
     const reloadDelay = 20;
@@ -69,6 +70,11 @@ const botStart = async () => {
     // const osType = process.env.osType || 'mac' //Unless given type, the defualt will be a mac (Not used yet)
     // console.log(pages);    
     let page = pages[0];
+
+    if(count == 1) {
+        await page.reload();
+    }
+
     const viewport = { width: 1200, height: 900 };
     page.setViewport(viewport)
 
@@ -109,7 +115,7 @@ const botStart = async () => {
 
             const myElementText2 = await page.evaluateHandle(({ targetCommentBox, divIndex }) => {
                 // Must check if have this class everytime (responsive dynamic class)
-                let commentEl = document.querySelectorAll(targetCommentBox)[0];
+                let commentEl = document.querySelectorAll(targetCommentBox)[divIndex];
                 console.log(document.querySelectorAll(targetCommentBox));
                 console.log(divIndex)
                 console.log('commentEl2');
