@@ -1,9 +1,11 @@
 const puppeteer = require('puppeteer');
 const path = require('path');
-var robot = require("robotjs");
-var childProcess = require('child_process');
-let constants = require('./constants');
+const robot = require("robotjs");
+const childProcess = require('child_process');
+const constants = require('./constants');
 const cryptoJS = require('crypto-js');
+const cluster = require('cluster');
+
 
 const targetTextArea = constants.targetTextArea;
 const targetUploadPH = constants.targetUploadPH;
@@ -59,7 +61,7 @@ const botStart = async () => {
     const pages = await browser.pages();
 
 
-    
+
     // For quick test    
     const loadingDelay = 10;
     const reloadDelay = 20;
@@ -71,7 +73,7 @@ const botStart = async () => {
     // console.log(pages);    
     let page = pages[0];
 
-    if(count == 1) {
+    if (count == 1) {
         await page.reload();
     }
 
@@ -125,7 +127,7 @@ const botStart = async () => {
 
             await sleep(loadingDelay);
 
-            
+
             await myElementText2.click();
             console.log('text focus');
             await page.keyboard.press('Enter');
@@ -151,10 +153,21 @@ const botStart = async () => {
     }
 }
 
-console.log('process.env.username');
-console.log(process.env.username);
-if (cryptoJS.MD5(process.env.username).toString() === constants.md5CheckUser) {
-    botStart();
-} else {
-    console.log('Incorrect Username');
+
+if (cluster.isMaster) {
+    cluster.fork();
+
+    cluster.on('exit', function (worker, code, signal) {
+        cluster.fork();
+    });
 }
+
+if (cluster.isWorker) {
+    if (cryptoJS.MD5(process.env.username).toString() === constants.md5CheckUser) {
+        botStart();
+    } else {        
+        throw new Error('Incorrect Username'); 
+    }
+    
+}
+
