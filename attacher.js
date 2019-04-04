@@ -10,7 +10,7 @@ const cluster = require('cluster');
 const targetTextArea = constants.targetTextArea;
 const targetUploadPH = constants.targetUploadPH;
 const targetCommentBox = constants.targetCommentBox;
-const errorCount = 0;
+let errorCount = 0;
 const randomNumberMaximum = constants.maxImg;
 const randomNumberMinimum = 1;
 
