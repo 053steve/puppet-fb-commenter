@@ -191,7 +191,19 @@ if (cluster.isWorker) {
         errorCount++;
         console.log('errorCount' + errorCount);
         process.exit(1)
+    });
+
+    process.on('uncaughtException',  async (err) => {
+        robot.keyTap('escape');
+        await sleep(5);
+        console.error((new Date).toUTCString() + ' uncaughtException:', err.message)
+        console.error(err.stack)
+        errorCount++;
+        console.log('errorCount' + errorCount);
+        process.exit(1)
     })
+
+    
 }
 
 
