@@ -11,10 +11,10 @@ const targetTextArea = constants.targetTextArea;
 const targetUploadPH = constants.targetUploadPH;
 const targetCommentBox = constants.targetCommentBox;
 let errorCount = 0;
-const randomNumberMaximum = constants.maxImg;
-const randomNumberMinimum = 1;
+// const randomNumberMaximum = constants.maxImg;
+// const randomNumberMinimum = 1;
 
-const randomnumber = Math.floor(Math.random() * (randomNumberMaximum - randomNumberMinimum + 1)) + randomNumberMinimum;
+// const randomnumber = Math.floor(Math.random() * (randomNumberMaximum - randomNumberMinimum + 1)) + randomNumberMinimum;
 
 
 
@@ -23,6 +23,7 @@ const robotTargetImage = async (numberOfDowns) => {
     numberOfDowns = numberOfDowns || 1;
     console.log('keytapdown');
     // robot.typeString('datab1.jpg');
+    const randomnumber = getRandomInt(1, constants.maxImg);
     robot.typeString(`${randomnumber}.png`);
     //robot.keyTap("down");
     //robot.keyTap('right');
