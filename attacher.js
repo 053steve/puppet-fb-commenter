@@ -10,13 +10,20 @@ const cluster = require('cluster');
 const targetTextArea = constants.targetTextArea;
 const targetUploadPH = constants.targetUploadPH;
 const targetCommentBox = constants.targetCommentBox;
+const errorCount = 0;
+const randomNumberMaximum = constants.maxImg;
+const randomNumberMinimum = 1;
+
+const randomnumber = Math.floor(Math.random() * (randomNumberMaximum - randomNumberMinimum + 1)) + randomNumberMinimum;
+
 
 
 //Caution: Must set target by manually setting upload window to file location
 const robotTargetImage = async (numberOfDowns) => {
     numberOfDowns = numberOfDowns || 1;
     console.log('keytapdown');
-    robot.typeString('datab1.jpg');
+    // robot.typeString('datab1.jpg');
+    robot.typeString(`${randomnumber}.png`);
     //robot.keyTap("down");
     //robot.keyTap('right');
     await sleep(5)
@@ -144,7 +151,12 @@ const botStart = async () => {
             // browser.disconnect();
         } catch (e) {
             console.log('something failed');
-            console.log(e);
+            throw new Error('something bad happened');
+            // console.log(e);
+            
+            
+            // throw new Error('something bad happened');
+
         }
 
 
@@ -152,6 +164,8 @@ const botStart = async () => {
         console.log('no browserWSEndpoint given');
     }
 }
+
+
 
 
 if (cluster.isMaster) {
@@ -167,7 +181,18 @@ if (cluster.isWorker) {
         botStart();
     } else {        
         throw new Error('Incorrect Username'); 
-    }
-    
+    }    
+
+    process.on('unhandledRejection',  async (err) => {
+        robot.keyTap('escape');
+        await sleep(5);
+        console.error((new Date).toUTCString() + ' uncaughtException:', err.message)
+        console.error(err.stack)
+        errorCount++;
+        console.log('errorCount' + errorCount);
+        process.exit(1)
+    })
 }
+
+
 
