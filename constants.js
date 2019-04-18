@@ -1,4 +1,6 @@
-module.exports = {  
+module.exports = {
+    host:'http://localhost:4000',
+    botId: 'COM001',
     targetTextArea: '._65td',
     targetUploadPH: '._3n43',
     targetCommentBox: '._5rpb',
