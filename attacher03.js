@@ -95,9 +95,10 @@ const botStart = async () => {
             //login sequence (only at first time when start script)
             await page.goto('https://www.facebook.com', {waitUntil: 'networkidle2'});    
             await page.waitFor('#email');            
-            await page.$eval('#email', el => el.value = FB_Account.fb_user);        
+            await page.$eval('#email', (el, fb_user) => el.value = fb_user, FB_Account.fb_user);
+            
             await page.click('#pass');    
-            await page.$eval('#pass', el => el.value = FB_Account.fb_pass);    
+            await page.$eval('#pass', (el, fb_pass ) => el.value = fb_pass, FB_Account.fb_pass);
             await page.click('#loginbutton');
             await page.waitFor('#userNav');
             robot.keyTap("escape");            
