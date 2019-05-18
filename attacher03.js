@@ -88,7 +88,8 @@ const botStart = async () => {
     // const osType = process.env.osType || 'mac' //Unless given type, the defualt will be a mac (Not used yet)
     // console.log(pages);    
     let page = pages[0];
-    if (count == 1) {
+
+    if (count == 1 && constants.mode === 'LOGIN') {
         try {
             await page.waitFor('#userNav');
         } catch (err) {            
